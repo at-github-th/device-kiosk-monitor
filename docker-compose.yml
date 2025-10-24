@@ -1,0 +1,18 @@
+{
+  version: 3.8,
+  services: {
+    api: {
+      build: .,
+      image: device-kiosk-monitor-api,
+      container_name: device-kiosk-monitor-api,
+      working_dir: /app/api,
+      volumes: [
+        ./api:/app/api
+      ],
+      command: npm start,
+      ports: [
+        4103:4103
+      ]
+    }
+  }
+}
