@@ -1,16 +1,18 @@
-# Real-time Device/Kiosk Monitor — Native Backend (GO)
+# Device/Kiosk Monitor
 
-This repo provides a **language-native backend** on port **5103**, with minimal **web** and **mobile** clients and a tiny **SDK**.
+**Stack:** Go (Fiber)  
+**API:** http://127.0.0.1:5103  
+**Web:** http://localhost:5503
 
-## Run
-See `api/README.md` for language-specific steps, then:
-- Web: open `web/index.html` via a static server
-- Mobile: `cd mobile && npm install && npm run start` (Android emulator uses `10.0.2.2:5103`)
+## Run (local)
 
-## Endpoints
-Project-specific routes are implemented in the backend (see `api/`). Try typical paths like:
-- `/api/kpis`, `/api/opps`, `/api/notes`
-- `/api/devices`, `/api/heartbeats`
-- `/api/resources`, `/api/availability`, `/api/book`
-- `/api/payments/create`, `/api/webhooks`
-- `/api/ingest`, `/api/dash/summary`
+### API
+cd device-kiosk-monitor-native/api && go run .
+
+### Web (static tester)
+cd device-kiosk-monitor-native/web && python3 -m http.server 5503
+
+## Test
+- **Ping:** curl -s http://127.0.0.1:5103 | jq .
+- **Devices:** GET /api/devices\n- **Update:** POST /api/devices/:id/status
+
