@@ -1,18 +1,20 @@
 # Device/Kiosk Monitor
 
-**Stack:** Go (Fiber)  
-**API:** http://127.0.0.1:5103  
-**Web:** http://localhost:5503
+Language: Go (Fiber)
 
-## Run (local)
+## How to run
 
-### API
+API
+```bash
 cd device-kiosk-monitor-native/api && go run .
+```
 
-### Web (static tester)
+Web
+```bash
 cd device-kiosk-monitor-native/web && python3 -m http.server 5503
+```
 
-## Test
-- **Ping:** curl -s http://127.0.0.1:5103 | jq .
-- **Devices:** GET /api/devices\n- **Update:** POST /api/devices/:id/status
+Open http://localhost:5503
 
+## Endpoints
+- Devices: GET /api/devices\n- Update: POST /api/devices/:id/status
