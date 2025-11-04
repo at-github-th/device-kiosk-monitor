@@ -1,11 +1,42 @@
-<!doctype html><meta charset="utf-8"><title>device-kiosk-monitor-native demo</title>
-<style>body{font-family:system-ui,Arial;margin:24px;max-width:900px}.row{display:flex;gap:8px;margin:8px 0}button{padding:8px 12px}pre{background:#111;color:#0f0;padding:12px;min-height:120px;white-space:pre-wrap}</style>
-<h1>device-kiosk-monitor-native web tester</h1>
-<div class="row"><label>API base</label><input id="base" size="40" value="http://127.0.0.1:5103"><button onclick="ping()">Ping</button><button onclick="ex()">Run Example</button></div>
-<pre id="out">Click a button…</pre>
+<!doctype html><html><head><meta charset="utf-8"/>
+<title>Device/Kiosk Monitor</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+  body{font-family:system-ui;margin:24px;background:#0a0a0a;color:#e5e5e5}
+  h1{margin:0 0 6px}
+  .sub{opacity:.7}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{border-bottom:1px solid #333;padding:8px;text-align:left}
+  .ok{color:#22c55e}.down{color:#ef4444}
+  button{background:#2563eb;border:0;color:#fff;border-radius:6px;padding:6px 10px;cursor:pointer}
+  pre{background:#111;border:1px solid #222;border-radius:8px;padding:10px;overflow:auto}
+</style></head><body>
+<h1>Device/Kiosk Monitor</h1>
+<div class="sub">Go • Fiber • :5103</div>
+<div style="margin:10px 0"><button id="reload">Reload</button></div>
+<table id="tbl"><thead><tr><th>ID</th><th>Type</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
+<h3>Raw</h3><pre id="out">Ready.</pre>
 <script>
+const BASE="http://127.0.0.1:5103";
 const out=document.getElementById('out');
-function base(){return document.getElementById('base').value}
-async function ping(){try{const r=await fetch(base()); out.textContent=JSON.stringify(await r.json(),null,2);}catch(e){out.textContent=String(e)}}
-async function ex(){out.textContent="Try /api endpoints for this app"}
-</script>
+const tbody=document.querySelector('#tbl tbody');
+async function load(){
+  const meta=await fetch(BASE).then(r=>r.json());
+  const list=await fetch(BASE+"/api/devices").then(r=>r.json());
+  out.textContent=JSON.stringify({meta,list},null,2);
+  tbody.innerHTML=list.map(d=>`
+    <tr>
+      <td>${d.id}</td>
+      <td>${d.type}</td>
+      <td class="${d.alive?'ok':'down'}">${d.alive?'UP':'DOWN'}</td>
+      <td><button onclick="ping('${d.id}')">Ping</button></td>
+    </tr>`).join("");
+}
+async function ping(id){
+  const r=await fetch(BASE+"/api/devices/"+id+"/ping").then(r=>r.json()).catch(String);
+  alert(typeof r==="string"?r:("pong: "+JSON.stringify(r)));
+  load();
+}
+document.getElementById('reload').onclick=load;
+load();
+</script></body></html>
